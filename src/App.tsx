@@ -145,22 +145,7 @@ const App: React.FC = () => {
     getQuote();
     getNameday();
 
-    var NodeGeocoder = require('node-geocoder');
-
-    var options = {
-      provider: 'google',
-      httpAdapter: 'https', // Default
-      apiKey: ' ', // for Mapquest, OpenCage, Google Premier
-      formatter: 'json', // 'gpx', 'string', ...
-      util: false
-    };
-
-    var geocoder = NodeGeocoder(options);
-
-    geocoder.reverse({lat:28.5967439, lon:77.3285038}, function(err: any, res: any) {
-      console.log(res);
-    });
-
+    
 
     setDate({
       date: new Intl.DateTimeFormat(navigator.language).format(new Date()),
@@ -212,7 +197,7 @@ const App: React.FC = () => {
 
           
           <h2 className='font-thin uppercase tracking-widest lg:text-3xl'>
-            in {location.region}
+            in {timezone.timezone}
           </h2>
         </section>
       </section>
