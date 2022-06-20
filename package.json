@@ -12,11 +12,13 @@
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "axios": "^0.27.2",
+    "node-geocoder": "^4.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "tailwind-scrollbar-hide": "^1.1.7",
     "typescript": "^4.7.4",
+    "util": "^0.12.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

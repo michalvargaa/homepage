@@ -34,6 +34,11 @@ interface Date {
 }
 
 
+interface Location {
+  region: string;
+  country: string;
+}
+
 const App: React.FC = () => {
   const [time, setTime] = useState<string>(
     `${new Date().getHours()}:${new Date().getMinutes()}`
@@ -50,6 +55,8 @@ const App: React.FC = () => {
     conditionText: '',
     icon: '',
   });
+
+  const [location, setLocation] = useState<Location>({} as Location);
 
   const getTimezone = async () => {
     const response = await axios.get('https://worldtimeapi.org/api/ip');
@@ -102,6 +109,7 @@ const App: React.FC = () => {
     }
   };
 
+
   const getWeatherBasedOnLocation = () => {
     const success = async (position: GeolocationPosition) => {
       const response = await axios.get(
@@ -111,13 +119,19 @@ const App: React.FC = () => {
       );
       const data = await response.data;
       console.log(data);
-      data &&
+      if(data) {
         setWeather({
           temperatureC: data.current.temp_c,
           temperatureF: data.current.temp_f,
           conditionText: data.current.condition.text,
           icon: data.current.condition.icon,
         });
+        setLocation({
+          region: data.location.region,
+          country: data.location.country
+        })
+      }
+
     };
 
     if (navigator.geolocation) {
@@ -130,6 +144,23 @@ const App: React.FC = () => {
     getTimezone();
     getQuote();
     getNameday();
+
+    var NodeGeocoder = require('node-geocoder');
+
+    var options = {
+      provider: 'google',
+      httpAdapter: 'https', // Default
+      apiKey: ' ', // for Mapquest, OpenCage, Google Premier
+      formatter: 'json', // 'gpx', 'string', ...
+      util: false
+    };
+
+    var geocoder = NodeGeocoder(options);
+
+    geocoder.reverse({lat:28.5967439, lon:77.3285038}, function(err: any, res: any) {
+      console.log(res);
+    });
+
 
     setDate({
       date: new Intl.DateTimeFormat(navigator.language).format(new Date()),
@@ -156,7 +187,7 @@ const App: React.FC = () => {
         className='w-full h-screen fixed -z-10 object-cover  brightness-50'
       />
 
-      <section className='flex flex-col justify-between h-full py-14 lg:py-14 text-white w-5/6 lg:max-w-7xl mx-auto  snap-start'>
+      <section className='flex flex-col justify-between h-full py-8 lg:py-14 text-white w-5/6 lg:max-w-7xl mx-auto  snap-start'>
         <section className='flex flex-col gap-5 lg:max-w-lg'>
           <div className='flex items-center gap-5'>
             <q className='text-sm lg:text-base w-4/5'>{quote.content}</q>
@@ -181,12 +212,12 @@ const App: React.FC = () => {
 
           
           <h2 className='font-thin uppercase tracking-widest lg:text-3xl'>
-            in {timezone.timezone}
+            in {location.region}
           </h2>
         </section>
       </section>
 
-      <section className='text-white bg-[rgba(0,0,0,.75)] select-none snap-start'>
+      <section className='text-white bg-[rgba(0,0,0,.75)] select-none snap-end'>
         <div className='w-5/6 lg:max-w-7xl mx-auto flex flex-col gap-8 py-14 lg:flex-row lg:gap-0 lg:divide-x'>
           <div className='flex flex-col gap-8 lg:flex-1 lg:gap-14 font-normal text-sm uppercase lg:tracking-widest'>
               <h3 className='flex justify-between items-center lg:flex-col lg:justify-start lg:items-start lg:text-base lg:gap-3'>
